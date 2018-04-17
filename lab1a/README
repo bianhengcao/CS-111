@@ -1,0 +1,18 @@
+NAME:Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+
+lab1a.c:
+The C source file following the specs of the project
+I used my previous project as an example to write the getopt segment.
+I used the manual pages to learn how to use the mentioned syscalls like pipe, kill, and poll
+Some of the errors I encountered were figuring out to set up the two pipes for the parent and the child proccess
+I used an example from tutorialspoint, which i found in their unix tutorials, to better understand how to use piping
+I also had problem debugging, as I used fprintf() to debug the multiple proccesses. 
+Makefile:
+A Makefile with three options: default, clean, and dist
+The default silently compiles lab1a.c with the options -w -Wall -Wextra into an executable names lab1a
+The clean removes lab1a and the tarball in the working directory
+The dist option creates a tarball from the C source file, the Makefile, and the README file.
+README:
+A text file that describes the file within the tarball.
+It includes the proccess of coding the program and any other miscillaneous information.

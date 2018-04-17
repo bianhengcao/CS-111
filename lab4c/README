@@ -1,0 +1,21 @@
+NAME:Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+lab4c_tcp.c:
+A C file that runs on a Beaglebone to connect to a TCP logging server. 
+I used my lab4b source file as a basis for this executable, with the main difference was the removal of threading. 
+I also used my previous project, mainly 1C, as a reference on connecting to a server.
+I encountered some bugs regarding sending the reports properly, but I evantually fixed it
+Unfortunately, due to an error, I was unable to test my program with the sanity check script on my Beaglebone.
+However, I was able to make a dud temperature evaluator on the SEASNET server that successfully connected to the server and completed successful reports
+lab4c_tls.c:
+I used the provided resource to understand how to use the SSL library in my program and send encrypted messsages back and forth.
+Various bugs I encountered was failing to include the neccessary libraries in my Makefile, which led to a lot of confusion
+Other errors included figuring out how to format buffered messages to send to the server.
+Similar to my tcp file, I was unable to properly test my program, but was able to confirm normal behavior with the test server.
+Makefile: 
+A Makefile with three targets: default, clean, and dist. 
+Default uses the included lab4c_tcp.c and lab4c_tls.c source modules to create executables with the silent warnings options and -Wall and -Wextra options.
+Clean removes the lab4c_tcp and lab4c_tls executables and the distribution tarball
+Dist creates a tarball out of the included files.  
+README:
+A file that describes the included files and specific details about the program like testing and development.

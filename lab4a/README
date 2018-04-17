@@ -1,0 +1,15 @@
+NAME: Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+
+SSN:BBGW17090240
+MAC:2CF7F1066A70
+my_beaglebone.png:
+A selfie with the base beaglebone green wireless kit.
+connected.png:
+A picture of my ifconfig output after connecting. Also shows that I changed my beaglebone's hostname, althought the full name is only displayed as my UID due to the period
+copy.png:
+A screenshot of my filezilla output after moving a file called hello.c to my beaglebone. The file is also shown to exist on the beaglebone afterwards.
+build_run.png:
+A screenshot of the output of compiling hello.c using gcc and executing the executable. The puTTy window also displays that the IP address matches of the beaglebone's wlan0 IP address, showing it is over Wifi rather than USB
+git.png:
+A screenshot of using get-apt install git, although the output is that after the files were orignally installed. The git repo is a random hello-world repo I found online

@@ -1,0 +1,16 @@
+NAME:Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+lab3b.py:
+A python script that analyzes an included csv file.
+The script first takes the data from the file using the csv module and shoves it into data structures reflecting each category of entry
+The script then performs its anaylsis by reading the three areas specified in the lab3
+The block anaylztion proved to be the most difficult due to the diffulcty I had reading the individual blocks.
+Some bugs I encountered in that section was handling 0 blocks and reading the indirect blocks incorrectly by using the wrong arguments
+The inode section proved the easiest to understand for me
+The directory section was also diffulcty due to the amount of cases that I needed to handle.
+Makefile: A Makefile with the three targets specified. 
+The default option copies the python script into one called lab3b and changes the permissions so it is executable
+The clean option removes the lab3b file and tarball
+The make option creates a tarball
+README:
+A file that describes the included files and specific details about the program like testing and development.

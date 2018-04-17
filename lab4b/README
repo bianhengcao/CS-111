@@ -1,0 +1,11 @@
+NAME: Bianheng Cao
+EMAIL: bianhengcao@gmail.com
+
+lab4b.c:
+The source file of the program. There program uses two threads, one to output temperature information and another to take in commands and the button. I used 128 for the buffer size for each command as stated on Piazza. I used fopen and fprintf to write to the log file due to the ease of writing output. I struggled with this due to a bug with the File pointer at first. The GPIO port I used was 51 for the button and A1 for the therometer. My references with the sources provided in the assignment.
+
+Makefile:
+A makefile with all of the described targets. The smoke test runs a test script for the program and then deletes it later.
+
+README:
+A file describing the rest of the files included in the tar.

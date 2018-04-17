@@ -1,0 +1,46 @@
+NAME:Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+
+Question 2.3.1:
+Most of the cycles are spent doing the list operations, as there is a low amount of competing traffic between threads, which means very little time spent waiting for the locks compared to the time spent doing the operations. 
+Most of the time spent in the spin locks during high thread tests are on spinning, as many threads are all competing for the lock, and must spin and waste CPU time when they cannot access it. 
+Most of the time in mutex tests are on the list operations, because mutexes put threads to sleep when they need to access critical areas and wake them when it is their turn, thus saving the CPU's resources from being wasted on waiting.
+Question 2.2.2:
+The lines of code that consume the most cycles are that of the while loop with the test and set condition and the empty statement that spins when the lock is held.
+This operation is expensive with large numbers of threads since only one thread can have the area at one time, so the others must spin and waste CPU cycles waiting for the lock to be freed.
+Question 2.2.3:
+This lock-wait time rises drastically as each thread has more competitors that are fighting for the same lock. This means that each thread will, on average, have to wait more as more competitors must complete their tasks before a thread can execute.
+The completion time rises with number of threads due to the gradual loss of spacial locality in the caches, as they are less and less likely to hold relevant information for a thread as they must flush it out for other competing thread information. Since caches are much faster than RAM, this causes an increase in completion time.
+The wait time goes up faster than completion time since the completion time only increases gradually due to small increases of accessing time, which are not great compared to the actual time doing the operations. In contrast, the wait time goes up multiplicatively as the increasing number of threads affects all thread's wait time, which causes the much faster increase.
+Question 2.2.4:
+The number of lists increases the amount of operations per second as there is less competition for the same critical areas from the same threads. 
+It would seem reasonable to claim so, as the number of threads is proportionally the same for each list, which makes the amount of waiting time and completion time around the same.
+
+SortedList.h:
+The included header file for the project
+SortedList.c:
+An implemenation of SortedList. I used CS32 presentations from Nachenberg's class to help me implement the doubly linked list. I had an error relating to strcmp, as the head's key was NULL, which would cause a segmenation fault everytime an insert was attempted on an empty list. To fix this, I used the short cicuit or function to first check if the current node was NULL.
+lab2_list.c:
+A C program that functions properly with the mentioned options in the spec. The implemenation of creating the elements first was difficult to pass to the threads, but I successfully accomplished it by passing an array index of the elemenents as an arguement for the threads and then letting them take the amount of elements needed as a whole chunk. The keys were all 128 bytes long and contained only English letters. I modified this value from my lab2a value of 1024 due to the incredibly long time that hashing and performing operations were taking on top of waiting. The letters were assigned using rand.
+The additional --list option was hard to implement due to the length option, which was hard to synchronize with multiple threads. I used a CRC32 hash function for hashing my keys(which I changed to 32 bits long for efficiency). I found this hash function from the website https://www.cs.hmc.edu/~geoff/classes/hmc.cs070.200101/homework10/hashfuncs.html. 
+Makefile:
+A makefile with a default option that makes the add and list files. The test target creates a datasheet filled with each test case for the graphs. The profile option runs google-pprof for profiling and outputs out the file. The graphs option runs tests and then the included graph script to get the respective graphs. The dist option creates a tarball with all the files included. Clean removes the executable, profile file, and tarball from the directory.
+lab2b_list.csv:
+A datasheet containing all the output of the test cases included in the Makefile and follows the spec's requirements.
+profile.out:
+A file describing the amount of time spent on each insruction to find out where the most amount of time is being spent on the spin-lock implementation. The file was created using the google-pprof tool on the SEASNET servers.
+lab2b_1.png:
+A picture of the throughput vs. number of threads for a constant number of iterations. A logarighmic scale was used for the y-scale.
+ The spin lock shows a lower throughput overall compared to the mutex implemenation, although both show decreasing throughput as threads increase.
+lab2b_2.png:
+A graph of the wait time and the average completion time as a function of threads. The completion time line has a lower slope than that of the wait time line. 
+lab2b_3.png:
+A picture of which test runs were successful with the list options enabled. The data seems to indicate that the list options were moderately successful in reducing failure in unprotected runs. 
+lab2b_4.png:
+The graph of the throughput of mutex protected lists with different lines of the same amoung of sublists. The graph seems to show that throughput increases as more sublists are introduced. Due to the nature of logarithmic scaling, the value of zero could not be properly represented for one thread's waiting time.
+lab2b_5.png:
+The graph of the throughput of spin lock protected lists with different lines of the same amoung of sublists. The graph seems to show that throughput increases as more sublists are introduced.
+lab2_list.gp:
+The graphing script used to produce the pictures. It uses gnuplot to accomplish this, and is modeled after the lab2_list.gp script from Project 2A provided as part of the project.
+README:
+A file that describes the included files and specific details about the program like testing and development.

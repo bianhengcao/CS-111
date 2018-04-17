@@ -1,0 +1,20 @@
+NAME: Bianheng Cao
+EMAIL: bianhengcao@gmail.com
+
+The file lab0.c contains the source code for the program.
+The program first retrieves the included options using getopt and set the neccessary flags and values for each option.
+To understand the getopt API, I used the GNU website's sample code at https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Option-Example.html.
+I also used the included fd_juggling.html to understand how to change the stdout and stdin to different files.
+After retriving the options, if the flag for catch was set to 1, the system used signal to register SIGSEGV to the previously declared handler function
+If the flag for segfault was set, a char pointer was set to NULL and then the program would attempt to write a string to it, which calls a segmentation fault.
+To read from stdout, a one char buffer was used to read each byte until read returns 0, which meant end of file. 
+After each iteration of reading a character, the program would write out to stdout each time.
+Finally, the program would deallocate its memory and close stdout and stdin.
+backtrace.png is a screenshot of the gdb output and stack backtrace when lab0 is run with --segfault
+To achieve this, the program was first compiled with -g. After opening it in gdb and running it, I then used the command backtrace to retrieve the stack information.
+breakpoint.png is the screenshot after setting a breakpoint at the line with a segmentation fault and using print to check if the pointer value was NULL. 
+For my smoke test, I first tested my program by testing if it returned the right value for a correct input by command line and through a file
+Then I tested if it returned the right value for an invalid option
+Second, I tested if it returned the right value with a valid output file and an invalid output file
+Finally, I tested if catch caught a segmentation fault or not.
+At the very end of the output will be the string "All tests successful"

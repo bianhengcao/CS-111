@@ -1,0 +1,12 @@
+NAME:Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+
+lab3a.c:
+A source file that outputs data from a file system into stdout. By far the most difficult part of this project was understanding the data structures and how to extract information from them.
+This was most prevalent in the inodes section where so much of the information was much more complicated by its organiztion and the sheer complexity. The included tutorial on EXT2 was very helpful with explaining what each field was, and made the project a lot easier to understand.
+Some problems that I ran into were with the indirect blocks, which I found hard to wrap my head around. I was confused with how the offset was supposed to be calculated, and simply changed the program to match the values like those of trival.img.
+Other problems include being tripped up by bitwise operators(which I forgot to put paranthees around), recursive calls, and figuring out the offset for the inodes, and figuring out the indirect directories, which I did not properly test due to the lack of them in trivial.img.
+Makefile:
+A Makefile with three targets. Default builds the lab3a executable with the -Wall and -Wextra tags. clean removes the executable and tarball. dist makes the tar file with the ext2_fs.h file included.
+README:
+A file describing the included files and the details of the project.

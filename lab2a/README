@@ -1,0 +1,33 @@
+NAME:Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+
+Part 1:
+Question 2.1.1:
+A non-zero sum only happens with multiple threads. More threads makes it more common and easier to cause an error.
+For example, 2 threads began to give errors after 10000 iterations, while 8 began to show errors after 1000 instead.
+Many iterations are needed before errors are seen because it increases the likelihood that threads will overlap or an interrupt will happen.
+Smaller amounts of iterations will not encounter these problems because these are rare events that happen by chance.
+Question 2.1.2:
+--yield runs slower as all threads must first wait, which leads to extra time spent on each operation. The per-operation timing cannot be accurate, as the time spent waiting cannot be explicitly accounted for by a program.
+Question 2.1.3: 
+The cost of overhead is a large part of the total time, so the small cost of each iteration brings the average cost of operation down as more iterations are performed. The average cost will gradually plateau out, so the ideal cost would be somewhere before the marginal gain of more iterations becomes very low.
+Question 2.1.4:
+All options perform around the same because there is less traffic between conflicting threads that would lead to time being spent waiting for another thread to complete. The more traffic there is, the more time spent just waiting for the critical area to be available, which is why the protected operations slow down for more and more threads.
+
+Part 2:
+Question 2.2.1:
+The mutex protected operations in Part 2 had a larger increase in time than Part 1, although both had increases due to the increased traffic between more and more threads. The difference in the steepness of the curve probably arrives through the increased complexity of the doubly linked list functions, which are more expensive than the simple add function of Part 1 
+Question 2.2.2:
+The curves increase for more threads due to the increased traffic from more threads. This causes threads to wait more and more as they compete for the critical area. The Mutex curve is lower due to the efficiency of the simple conditional variable compared to the spin lock, which waste clock cycles and computation time spinning.
+lab2_add.c:
+A C program that includes the four options that include the yield, mutex, spin, and compare and swap options for protection and error detecting. The threads ran an function that calls add twice, once for 1 and once with -1. The function also runs an if statement for each option, which makes sure the correct operations are run. The main program passes two argument in a struct containing the count address and the iterations to each thread. After joining the threads, the main body then prints out "add" and then "yield" if the option is enabled, and then the protection level.    
+SortedList.h:
+The included header file for the project
+SortedList.c:
+An implemenation of SortedList. I used past CS32 presentations from Nachenberg's class to help me implement the doubly linked list.
+lab2_list.c:
+A C program that functions properly with the mentioned options in the spec. The implemenation of creating the elements first was difficult to pass to the threads. The keys were all 1 KB long and contained only English letters. They were assigned using rand. 
+Makefile:
+A makefile with a default option that makes the add and list files. The test target creates a datasheet filled with each test case for the graphs. The graphs option runs the graph scripts to get the respective graphs. The dist option creates a tarball with all the files included. Clean removes all programs and files from the directory.
+README:
+A file that describes the included files and specific details about the program like testing and development.

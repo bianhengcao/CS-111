@@ -1,0 +1,11 @@
+NAME:Bianheng Cao
+EMAIL:bianhengcao@gmail.com
+
+lab1b-client.c:
+A file containing the source code for the client side of the program. Much of the code relating to polling and the I/O with the server was based off my previous lab1a, most specifically the --shell option portion. Some improvements were also added to my previous code. For example, I made a sepearate function to state an error, reset the terminal mode, and exit with an error. I used the provided tutorial of socket programming to connect to the server, more specifically the sample client.c code in the tutorial. The API for compressing was diffult to use, and I used the provided tutorial and the zlib website at https://www.zlib.net/zlib_how.html 
+lab1b-server.c:
+Similar to the client executable, the server program was heavily based on the --shell option of lab1a for similar features like pollin and provided tutorials for the new features like compression. Debugging for the server was far more difficult as the proccesses did not close properly for me. I also had to write the exit status function of the shell newly as I did not remember to implement with my lab1a. 
+Makefile:
+A makefile with a default option that makes all files. There are also the client and server targets that builds each executable seperately. The clean option removes all files made by the Makefile and the dist option creates a tarball of the source code, Makefile, and README file.
+README:
+A file that describes the included files and specific details about the proccess of creating the program.

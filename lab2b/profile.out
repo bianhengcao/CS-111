@@ -1,0 +1,442 @@
+Total: 1317 samples
+    1158  87.9%  87.9%     1315  99.8% add
+     131   9.9%  97.9%      131   9.9% __strcmp_sse42
+      13   1.0%  98.9%       71   5.4% SortedList_insert
+       6   0.5%  99.3%       82   6.2% SortedList_lookup
+       3   0.2%  99.5%        3   0.2% _init
+       3   0.2%  99.8%        3   0.2% hash
+       1   0.1%  99.8%        1   0.1% __GI___clock_gettime
+       1   0.1%  99.9%        1   0.1% __random_r
+       1   0.1% 100.0%        2   0.2% main
+       0   0.0% 100.0%     1315  99.8% __clone
+       0   0.0% 100.0%        2   0.2% __libc_start_main
+       0   0.0% 100.0%        1   0.1% __random
+       0   0.0% 100.0%        2   0.2% _start
+       0   0.0% 100.0%        1   0.1% rand
+       0   0.0% 100.0%     1315  99.8% start_thread
+ROUTINE ====================== add in /u/cs/ugrad/bianheng/CS111/lab2_list.c
+  1158   1315 Total samples (flat / cumulative)
+     .      .   49:       exit(2);
+     .      .   50:     }
+     .      .   51: }
+     .      .   52: 
+     .      .   53: void add(SortedListElement_t* arg)
+---
+     .      .   54: {
+     .      .   55:   SortedListElement_t* start=arg;
+     .      .   56:   clockid_t id=CLOCK_REALTIME;
+     .      .   57:   struct timespec start_t;
+     .      .   58:   struct timespec end;
+     .      .   59:   long long ret=0;
+     .      .   60:   if(mtx)
+     .      .   61:     {
+     .      .   62:       int i;
+     .      .   63:       for(i=0;i<itr;i++)//insert
+     .      .   64: 	{
+     .      .   65: 	  int j=hash((start+i)->key)%l_num;
+     .      .   66: 	  if(clock_gettime(id, &start_t)<0)
+     .      .   67: 	    {
+     .      .   68: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .   69: 	      exit(1);
+     .      .   70: 	    }
+     .      .   71: 	  pthread_mutex_lock(locks+j);
+     .      .   72: 	  if(clock_gettime(id, &end)<0)
+     .      .   73: 	    {
+     .      .   74: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .   75: 	      exit(1);
+     .      .   76: 	    }
+     .      .   77: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .   78: 	  SortedList_insert(list[j], start+i);
+     .      .   79: 	  pthread_mutex_unlock(locks+j);
+     .      .   80: 	}
+     .      .   81: 
+     .      .   82:       int len=0;
+     .      .   83:       for(i=0;i<l_num;i++)//enumerate through every list for count
+     .      .   84: 	{
+     .      .   85: 	  if(clock_gettime(id, &start_t)<0)
+     .      .   86: 	    {
+     .      .   87: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .   88: 	      exit(1);
+     .      .   89: 	    }
+     .      .   90: 	  pthread_mutex_lock(locks+i);
+     .      .   91: 	  if(clock_gettime(id, &end)<0)
+     .      .   92: 	    {
+     .      .   93: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .   94: 	      exit(1);
+     .      .   95: 	    }
+     .      .   96: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .   97: 	  int l=SortedList_length(list[i]);
+     .      .   98: 	  if(l<0)
+     .      .   99:             {
+     .      .  100:               fprintf(stderr, "SortedList_length failed\n");
+     .      .  101:               exit(2);
+     .      .  102:             }
+     .      .  103: 	  len+=l;
+     .      .  104: 	  pthread_mutex_unlock(locks+i);
+     .      .  105: 	}
+     .      .  106: 
+     .      .  107:       for(i=0;i<itr;i++)//lookup and delete
+     .      .  108:         {
+     .      .  109: 	  int j=hash((start+i)->key)%l_num;
+     .      .  110: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  111: 	    {
+     .      .  112: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  113: 	      exit(1);
+     .      .  114: 	    }
+     .      .  115: 	  pthread_mutex_lock(locks+j);
+     .      .  116: 	  if(clock_gettime(id, &end)<0)
+     .      .  117: 	    {
+     .      .  118: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  119: 	      exit(1);
+     .      .  120: 	    }
+     .      .  121: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .  122:           SortedListElement_t* ptr  = SortedList_lookup(list[j], start[i].key);
+     .      .  123:           if(ptr==NULL)
+     .      .  124:             {
+     .      .  125:               fprintf(stderr, "SortedList_lookup failed\n");
+     .      .  126:               exit(2);
+     .      .  127:             }
+     .      .  128:           if(SortedList_delete(ptr)!=0)
+     .      .  129:             {
+     .      .  130:               fprintf(stderr, "SortedList_delete failed\n");
+     .      .  131:               exit(2);
+     .      .  132:             }
+     .      .  133: 	  pthread_mutex_unlock(locks+j);
+     .      .  134:         }
+     .      .  135:     }
+     .      .  136:   else if(spin)
+     .      .  137:     {
+     .      .  138:       int i;
+     .      .  139:       for(i=0;i<itr;i++)//insert
+     .      .  140: 	{
+     .      2  141: 	  int j=hash((start+i)->key)%l_num;
+     .      1  142: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  143: 	    {
+     .      .  144: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  145: 	      exit(1);
+     .      .  146: 	    }
+   641    641  147: 	  while(__sync_lock_test_and_set(spin_locks+j,1)==1)
+     .      .  148:             ;
+     .      .  149: 	  if(clock_gettime(id, &end)<0)
+     .      .  150: 	    {
+     .      .  151: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  152: 	      exit(1);
+     .      .  153: 	    }
+     .      .  154: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec)+end.tv_nsec-start_t.tv_nsec;
+     .     71  155: 	  SortedList_insert(list[j], start+i);
+     .      .  156: 	  __sync_lock_release(spin_locks+j);
+     .      .  157: 	}
+     .      .  158: 
+     .      .  159:       int len=0;
+     .      .  160:       for(i=0;i<l_num;i++)//enumerate through every list for count
+     .      .  161: 	{
+     .      .  162: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  163: 	    {
+     .      .  164: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  165: 	      exit(1);
+     .      .  166: 	    }
+     .      .  167: 	  while(__sync_lock_test_and_set(spin_locks+i, 1) ==1)
+     .      .  168: 	    ;
+     .      .  169: 	  if(clock_gettime(id, &end)<0)
+     .      .  170: 	    {
+     .      .  171: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  172: 	      exit(1);
+     .      .  173: 	    }
+     .      .  174: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .  175: 	  int l=SortedList_length(list[i]);
+     .      .  176:           if(l<0)
+     .      .  177:             {
+     .      .  178:               fprintf(stderr, "SortedList_length failed\n");
+     .      .  179:               exit(2);
+     .      .  180:             }
+     .      .  181:           len+=l;
+     .      .  182: 	  __sync_lock_release(spin_locks+i);
+     .      .  183: 	}
+     .      .  184:       
+     .      .  185:       for(i = 0;i<itr;i++)//lookup and delete
+     .      .  186: 	{
+     .      1  187: 	  int j=hash((start+i)->key)%l_num;
+     .      .  188: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  189: 	    {
+     .      .  190: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  191: 	      exit(1);
+     .      .  192: 	    }
+   517    517  193: 	  while(__sync_lock_test_and_set(spin_locks+j, 1) ==1)
+     .      .  194:             ;
+     .      .  195: 	  if(clock_gettime(id, &end)<0)
+     .      .  196: 	    {
+     .      .  197: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  198: 	      exit(1);
+     .      .  199: 	    }
+     .      .  200: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .     82  201: 	  SortedListElement_t* ptr = SortedList_lookup(list[j], start[i].key);
+     .      .  202: 	  if(ptr==NULL)
+     .      .  203: 	    {
+     .      .  204: 	      fprintf(stderr,"SortedList_lookup failed\n");
+     .      .  205: 	      exit(2);
+     .      .  206: 	    }
+     .      .  207: 	  if(SortedList_delete(ptr)!= 0)
+     .      .  208: 	    {
+     .      .  209: 	      fprintf(stderr, "SortedList_delete failed\n");
+     .      .  210: 	      exit(2);
+     .      .  211: 	    }
+     .      .  212: 	  __sync_lock_release(spin_locks+j);
+     .      .  213: 	}
+     .      .  214:     }
+     .      .  215:   else
+     .      .  216:     {
+     .      .  217:       int i;
+     .      .  218:       for(i=0;i<itr;i++)//insert
+     .      .  219: 	{
+     .      .  220: 	  int j=hash((start+i)->key)%l_num;
+     .      .  221: 	  SortedList_insert(list[j], start+i);
+     .      .  222: 	}
+     .      .  223:       
+     .      .  224:       int len=0;
+     .      .  225:       for(i=0;i<l_num;i++)//enumerate through every list for count
+     .      .  226: 	{
+     .      .  227: 	  int l=SortedList_length(list[i]);
+     .      .  228: 	  if(l<0)
+     .      .  229: 	    {
+     .      .  230: 	      fprintf(stderr, "SortedList_length failed\n");
+     .      .  231: 	      exit(2);
+     .      .  232: 	    }
+     .      .  233: 	  len+=l;
+     .      .  234: 	}
+     .      .  235: 
+     .      .  236:       for(i=0;i<itr;i++)//lookup and delete
+     .      .  237: 	{
+     .      .  238: 	  int j=hash((start+i)->key)%l_num;
+     .      .  239: 	  SortedListElement_t* ptr  = SortedList_lookup(list[j], start[i].key);
+     .      .  240: 	  if(ptr==NULL)
+     .      .  241: 	    {
+     .      .  242: 	      fprintf(stderr, "SortedList_lookup failed\n");
+     .      .  243: 	      exit(2);
+     .      .  244: 	    }
+     .      .  245: 	  if(SortedList_delete(ptr)!=0)
+     .      .  246: 	    {
+     .      .  247:               fprintf(stderr, "SortedList_delete failed\n");
+     .      .  248:               exit(2);
+     .      .  249:             }
+     .      .  250: 	}
+     .      .  251:     }
+     .      .  252:   pthread_exit(ret);
+---
+     .      .  253: }
+     .      .  254: 
+     .      .  255: int main(int argc, char** argv)
+     .      .  256: {
+     .      .  257: 
+ROUTINE ====================== add in /u/cs/ugrad/bianheng/CS111/lab2_list.c
+  1158   1315 Total samples (flat / cumulative)
+     .      .   49:       exit(2);
+     .      .   50:     }
+     .      .   51: }
+     .      .   52: 
+     .      .   53: void add(SortedListElement_t* arg)
+---
+     .      .   54: {
+     .      .   55:   SortedListElement_t* start=arg;
+     .      .   56:   clockid_t id=CLOCK_REALTIME;
+     .      .   57:   struct timespec start_t;
+     .      .   58:   struct timespec end;
+     .      .   59:   long long ret=0;
+     .      .   60:   if(mtx)
+     .      .   61:     {
+     .      .   62:       int i;
+     .      .   63:       for(i=0;i<itr;i++)//insert
+     .      .   64: 	{
+     .      .   65: 	  int j=hash((start+i)->key)%l_num;
+     .      .   66: 	  if(clock_gettime(id, &start_t)<0)
+     .      .   67: 	    {
+     .      .   68: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .   69: 	      exit(1);
+     .      .   70: 	    }
+     .      .   71: 	  pthread_mutex_lock(locks+j);
+     .      .   72: 	  if(clock_gettime(id, &end)<0)
+     .      .   73: 	    {
+     .      .   74: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .   75: 	      exit(1);
+     .      .   76: 	    }
+     .      .   77: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .   78: 	  SortedList_insert(list[j], start+i);
+     .      .   79: 	  pthread_mutex_unlock(locks+j);
+     .      .   80: 	}
+     .      .   81: 
+     .      .   82:       int len=0;
+     .      .   83:       for(i=0;i<l_num;i++)//enumerate through every list for count
+     .      .   84: 	{
+     .      .   85: 	  if(clock_gettime(id, &start_t)<0)
+     .      .   86: 	    {
+     .      .   87: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .   88: 	      exit(1);
+     .      .   89: 	    }
+     .      .   90: 	  pthread_mutex_lock(locks+i);
+     .      .   91: 	  if(clock_gettime(id, &end)<0)
+     .      .   92: 	    {
+     .      .   93: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .   94: 	      exit(1);
+     .      .   95: 	    }
+     .      .   96: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .   97: 	  int l=SortedList_length(list[i]);
+     .      .   98: 	  if(l<0)
+     .      .   99:             {
+     .      .  100:               fprintf(stderr, "SortedList_length failed\n");
+     .      .  101:               exit(2);
+     .      .  102:             }
+     .      .  103: 	  len+=l;
+     .      .  104: 	  pthread_mutex_unlock(locks+i);
+     .      .  105: 	}
+     .      .  106: 
+     .      .  107:       for(i=0;i<itr;i++)//lookup and delete
+     .      .  108:         {
+     .      .  109: 	  int j=hash((start+i)->key)%l_num;
+     .      .  110: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  111: 	    {
+     .      .  112: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  113: 	      exit(1);
+     .      .  114: 	    }
+     .      .  115: 	  pthread_mutex_lock(locks+j);
+     .      .  116: 	  if(clock_gettime(id, &end)<0)
+     .      .  117: 	    {
+     .      .  118: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  119: 	      exit(1);
+     .      .  120: 	    }
+     .      .  121: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .  122:           SortedListElement_t* ptr  = SortedList_lookup(list[j], start[i].key);
+     .      .  123:           if(ptr==NULL)
+     .      .  124:             {
+     .      .  125:               fprintf(stderr, "SortedList_lookup failed\n");
+     .      .  126:               exit(2);
+     .      .  127:             }
+     .      .  128:           if(SortedList_delete(ptr)!=0)
+     .      .  129:             {
+     .      .  130:               fprintf(stderr, "SortedList_delete failed\n");
+     .      .  131:               exit(2);
+     .      .  132:             }
+     .      .  133: 	  pthread_mutex_unlock(locks+j);
+     .      .  134:         }
+     .      .  135:     }
+     .      .  136:   else if(spin)
+     .      .  137:     {
+     .      .  138:       int i;
+     .      .  139:       for(i=0;i<itr;i++)//insert
+     .      .  140: 	{
+     .      2  141: 	  int j=hash((start+i)->key)%l_num;
+     .      1  142: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  143: 	    {
+     .      .  144: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  145: 	      exit(1);
+     .      .  146: 	    }
+   641    641  147: 	  while(__sync_lock_test_and_set(spin_locks+j,1)==1)
+     .      .  148:             ;
+     .      .  149: 	  if(clock_gettime(id, &end)<0)
+     .      .  150: 	    {
+     .      .  151: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  152: 	      exit(1);
+     .      .  153: 	    }
+     .      .  154: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec)+end.tv_nsec-start_t.tv_nsec;
+     .     71  155: 	  SortedList_insert(list[j], start+i);
+     .      .  156: 	  __sync_lock_release(spin_locks+j);
+     .      .  157: 	}
+     .      .  158: 
+     .      .  159:       int len=0;
+     .      .  160:       for(i=0;i<l_num;i++)//enumerate through every list for count
+     .      .  161: 	{
+     .      .  162: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  163: 	    {
+     .      .  164: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  165: 	      exit(1);
+     .      .  166: 	    }
+     .      .  167: 	  while(__sync_lock_test_and_set(spin_locks+i, 1) ==1)
+     .      .  168: 	    ;
+     .      .  169: 	  if(clock_gettime(id, &end)<0)
+     .      .  170: 	    {
+     .      .  171: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  172: 	      exit(1);
+     .      .  173: 	    }
+     .      .  174: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .      .  175: 	  int l=SortedList_length(list[i]);
+     .      .  176:           if(l<0)
+     .      .  177:             {
+     .      .  178:               fprintf(stderr, "SortedList_length failed\n");
+     .      .  179:               exit(2);
+     .      .  180:             }
+     .      .  181:           len+=l;
+     .      .  182: 	  __sync_lock_release(spin_locks+i);
+     .      .  183: 	}
+     .      .  184:       
+     .      .  185:       for(i = 0;i<itr;i++)//lookup and delete
+     .      .  186: 	{
+     .      1  187: 	  int j=hash((start+i)->key)%l_num;
+     .      .  188: 	  if(clock_gettime(id, &start_t)<0)
+     .      .  189: 	    {
+     .      .  190: 	      fprintf(stderr, "Failed to get clock start:%s\n", strerror(errno));
+     .      .  191: 	      exit(1);
+     .      .  192: 	    }
+   517    517  193: 	  while(__sync_lock_test_and_set(spin_locks+j, 1) ==1)
+     .      .  194:             ;
+     .      .  195: 	  if(clock_gettime(id, &end)<0)
+     .      .  196: 	    {
+     .      .  197: 	      fprintf(stderr, "Failed to get clock resolution:%s\n", strerror(errno));
+     .      .  198: 	      exit(1);
+     .      .  199: 	    }
+     .      .  200: 	  ret+=1000000000*(end.tv_sec-start_t.tv_sec) + end.tv_nsec-start_t.tv_nsec;
+     .     82  201: 	  SortedListElement_t* ptr = SortedList_lookup(list[j], start[i].key);
+     .      .  202: 	  if(ptr==NULL)
+     .      .  203: 	    {
+     .      .  204: 	      fprintf(stderr,"SortedList_lookup failed\n");
+     .      .  205: 	      exit(2);
+     .      .  206: 	    }
+     .      .  207: 	  if(SortedList_delete(ptr)!= 0)
+     .      .  208: 	    {
+     .      .  209: 	      fprintf(stderr, "SortedList_delete failed\n");
+     .      .  210: 	      exit(2);
+     .      .  211: 	    }
+     .      .  212: 	  __sync_lock_release(spin_locks+j);
+     .      .  213: 	}
+     .      .  214:     }
+     .      .  215:   else
+     .      .  216:     {
+     .      .  217:       int i;
+     .      .  218:       for(i=0;i<itr;i++)//insert
+     .      .  219: 	{
+     .      .  220: 	  int j=hash((start+i)->key)%l_num;
+     .      .  221: 	  SortedList_insert(list[j], start+i);
+     .      .  222: 	}
+     .      .  223:       
+     .      .  224:       int len=0;
+     .      .  225:       for(i=0;i<l_num;i++)//enumerate through every list for count
+     .      .  226: 	{
+     .      .  227: 	  int l=SortedList_length(list[i]);
+     .      .  228: 	  if(l<0)
+     .      .  229: 	    {
+     .      .  230: 	      fprintf(stderr, "SortedList_length failed\n");
+     .      .  231: 	      exit(2);
+     .      .  232: 	    }
+     .      .  233: 	  len+=l;
+     .      .  234: 	}
+     .      .  235: 
+     .      .  236:       for(i=0;i<itr;i++)//lookup and delete
+     .      .  237: 	{
+     .      .  238: 	  int j=hash((start+i)->key)%l_num;
+     .      .  239: 	  SortedListElement_t* ptr  = SortedList_lookup(list[j], start[i].key);
+     .      .  240: 	  if(ptr==NULL)
+     .      .  241: 	    {
+     .      .  242: 	      fprintf(stderr, "SortedList_lookup failed\n");
+     .      .  243: 	      exit(2);
+     .      .  244: 	    }
+     .      .  245: 	  if(SortedList_delete(ptr)!=0)
+     .      .  246: 	    {
+     .      .  247:               fprintf(stderr, "SortedList_delete failed\n");
+     .      .  248:               exit(2);
+     .      .  249:             }
+     .      .  250: 	}
+     .      .  251:     }
+     .      .  252:   pthread_exit(ret);
+---
+     .      .  253: }
+     .      .  254: 
+     .      .  255: int main(int argc, char** argv)
+     .      .  256: {
+     .      .  257: 
